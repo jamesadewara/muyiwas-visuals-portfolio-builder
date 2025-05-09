@@ -1,5 +1,5 @@
+// lib/app.dart
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'core/services/auth_service.dart';
 import 'core/services/portfolio_service.dart';
@@ -41,12 +41,9 @@ class AuthWrapper extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final user = snapshot.data;
-          if (user == null) {
-            return const LoginScreen();
-          }
-          return const DashboardScreen();
+          return user == null ? const LoginScreen() : const DashboardScreen();
         }
-        return const Scaffold(
+        return Scaffold(
           body: Center(child: CircularProgressIndicator()),
         );
       },

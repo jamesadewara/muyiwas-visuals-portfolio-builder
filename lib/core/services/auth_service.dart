@@ -6,46 +6,29 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Stream<User?> get user => _auth.authStateChanges();
+  User? get currentUser => _auth.currentUser;
 
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return result.user;
-    } catch (e) {
-      throw _handleAuthError(e);
+      return credential.user;
+    } on FirebaseAuthException catch (e) {
+      throw _authError(e);
     }
   }
 
   Future<User?> signUpWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return result.user;
-    } catch (e) {
-      throw _handleAuthError(e);
-    }
-  }
-
-  Future<User?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
-      
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      
-      UserCredential result = await _auth.signInWithCredential(credential);
-      return result.user;
-    } catch (e) {
-      throw _handleAuthError(e);
+      return credential.user;
+    } on FirebaseAuthException catch (e) {
+      throw _authError(e);
     }
   }
 
@@ -57,32 +40,46 @@ class AuthService {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      throw _handleAuthError(e);
+    } on FirebaseAuthException catch (e) {
+      throw _authError(e);
     }
   }
 
-  String _handleAuthError(dynamic error) {
-    // Handle different auth errors and return user-friendly messages
-    if (error is FirebaseAuthException) {
-      switch (error.code) {
-        case 'invalid-email':
-          return 'The email address is badly formatted.';
-        case 'user-disabled':
-          return 'This user has been disabled.';
-        case 'user-not-found':
-        case 'wrong-password':
-          return 'Invalid email or password.';
-        case 'email-already-in-use':
-          return 'An account already exists for that email.';
-        case 'operation-not-allowed':
-          return 'Email/password accounts are not enabled.';
-        case 'weak-password':
-          return 'The password is too weak.';
-        default:
-          return 'An unknown error occurred.';
-      }
+  Future<User?> signInWithGoogle() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
+      
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      
+      final userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user;
+    } on FirebaseAuthException catch (e) {
+      throw _authError(e);
     }
-    return error.toString();
+  }
+
+  String _authError(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'invalid-email':
+        return 'The email address is badly formatted.';
+      case 'user-disabled':
+        return 'This user has been disabled.';
+      case 'user-not-found':
+      case 'wrong-password':
+        return 'Invalid email or password.';
+      case 'email-already-in-use':
+        return 'An account already exists for that email.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'weak-password':
+        return 'The password is too weak.';
+      default:
+        return 'An unknown error occurred.';
+    }
   }
 }
