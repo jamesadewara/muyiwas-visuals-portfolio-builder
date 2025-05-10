@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "324429753175",
+    "project_id": "muyiwa-visual-stories-db",
+    "storage_bucket": "muyiwa-visual-stories-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324429753175:android:3322fd99a927b073b8ac12",
+        "android_client_info": {
+          "package_name": "com.portfolio.muyiwa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "324429753175-vjv3531tnnitmklqehbki9n6029261k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6GCs50LC83O06t0UmAj-5Zh7-uNgiisk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "324429753175-vjv3531tnnitmklqehbki9n6029261k3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
