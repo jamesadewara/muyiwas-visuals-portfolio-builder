@@ -154,12 +154,8 @@ class AboutSection {
   final List<String>? skills;
   final String? aboutPictureUrl;
 
-  AboutSection({
-    required this.body,
-this.philosophy,
-this.skills,
-this.aboutPictureUrl
-  });
+  AboutSection(
+      {required this.body, this.philosophy, this.skills, this.aboutPictureUrl});
 
   AboutSection copyWith({
     String? body,
